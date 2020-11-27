@@ -27,6 +27,6 @@ void GLWidget :: toggleBackgroundColor ( bool toBlack )
     else
         glClearColor (1 , 1 , 1 , 1) ;
 
-//    updateGL () ;
+    update() ;
 
 }
