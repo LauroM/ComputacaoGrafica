@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as THREE from 'three';
+import { FileUploader } from 'ng2-file-upload/ng2-file-upload';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 @Component({
   selector: 'app-render',
@@ -13,11 +15,16 @@ export class RenderComponent implements OnInit {
   stateOptions:any[];
   renderer = new THREE.WebGLRenderer();
   camera:any;
+  value1: string = "off";
+  myfile: any[] = [];
+  public loader = new GLTFLoader();
+  // public uploader: FileUploader = new FileUploader({url: URL, itemAlias: 'photo'});
+
 
   constructor() { 
     this.stateOptions = [
-      { label: "Off", value: "off" },
-      { label: "On", value: "on" }
+      { label: "Dark", value: "off" },
+      { label: "Light", value: "on" }
     ];
   }
 
@@ -36,26 +43,31 @@ export class RenderComponent implements OnInit {
     
     var geometry = new THREE.BoxGeometry();
     var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    // var cube = new THREE.Mesh( geometry, material );
-    // this.scene.add( cube );
+    var cube = new THREE.Mesh( geometry, material );
+    this.scene.add( cube );
 
     this.camera.position.z = 5;
     
-    // var animate = function() {
-    //     requestAnimationFrame( animate );
+    var animate = () =>{
+        requestAnimationFrame( animate );
     
-    //     cube.rotation.x += 0.01;
-    //     cube.rotation.y += 0.01;
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
     
-    //     renderer.render( this.scene, camera );
-    // };
-    
-    // animate();
+        this.renderer.render( this.scene, this.camera );
+    };
+    animate();
   }
 
+  animate(cube:any){
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    this.renderer.render( this.scene, this.camera );
+  }
 
   public toggleBackground(){
 
+  
     var color;
     (this.toggled)? color = new THREE.Color(0x000000):
                         color = new THREE.Color(0xffffff);
@@ -63,11 +75,25 @@ export class RenderComponent implements OnInit {
 
     this.scene.background = color;
     console.log(this.scene);
-    
+
     this.renderer.render(this.scene,this.camera);
     
   }
 
 
+  public myUploader() {
+        
+    this.loader.load( 'src/assets/obj/WAVEFRONT.obj', ( gltf )=> {
 
+      this.scene.add( gltf.scene );
+    
+    }, undefined, function ( error ) {
+    
+      console.error( error );
+    
+    } );
+  }
+
+  
+  
 }

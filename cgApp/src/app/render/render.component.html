@@ -1,4 +1,10 @@
 <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" (onChange)="toggleBackground()"></p-selectButton>
 
-<button (click)="toggleBackground()">fsdfsdfsdfsd</button>
+
 <p-button (click)="toggleBackground()" label="Click" ></p-button>
+
+<!-- <p-fileUpload name="myfile[]" customUpload="true" (uploadHandler)="myUploader($event)"></p-fileUpload> -->
+
+<!-- <input type="file" name="photo" ng2FileSelect [uploader]="uploader" />myUploader -->
+
+<p-button (click)="myUploader()" label="upload" ></p-button>
