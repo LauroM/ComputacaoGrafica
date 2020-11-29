@@ -26,8 +26,7 @@ export class RenderComponent implements OnInit {
   controls:any = null;
   mesh:any = null;
   light:any = null;
-
-
+  boxmesh:any = null;
 
 
   constructor() { 
@@ -42,13 +41,16 @@ export class RenderComponent implements OnInit {
   ngOnInit(): void {
     this.createCanvas();
     //this.configCamera()
+
   }
 
   ngAfterViewInit(){
     this.configControls();
-    //this.createMesh();
-    this.createLight();
+    this.createMesh();
+    this.createLight(); // esse metodo esta fazendo um pointLight igual o createPointLight , porem com menos parametros, analisar o que é cada parametro passado. 
   }
+
+  
 
   public createCanvas(){
 
@@ -57,18 +59,14 @@ export class RenderComponent implements OnInit {
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( this.renderer.domElement );
     
-    var geometry = new THREE.BoxGeometry();
-    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    this.cube = new THREE.Mesh( geometry, material );
-    this.scene.add( this.cube );
 
     this.camera.position.z = 5;
     
     var animate = () =>{
         requestAnimationFrame( animate );
     
-        // cube.rotation.x += 0.01;
-        // cube.rotation.y += 0.01;
+        //this.cube.rotation.x += 0.01;
+        //this.cube.rotation.y += 0.01;
     
         this.renderer.render( this.scene, this.camera );
     };
@@ -127,12 +125,17 @@ export class RenderComponent implements OnInit {
     this.controls.update();
   }
   
-  // parametro
+
   createMesh(): void {
-    const geometry = new THREE.BoxGeometry(1,1,1);
-    const material = new THREE.MeshLambertMaterial({ color: 0x000000 });
-    this.mesh = new THREE.Mesh(geometry, material);
-    this.scene.add(this.mesh);
+    var geometry = new THREE.BoxGeometry();
+    var material = this.createWoodBoxMaterial() // metodo que carrega a textura e retorna para ser adicionada
+    this.boxmesh = new THREE.Mesh(geometry, material);
+    this.cube = new THREE.Mesh( geometry, material );
+    this.scene.add( this.cube );
+    this.scene.add( this.boxmesh ); //textura aplicada na cena
+    this.scene.add(this.createDirectionalLight()); //iluminação direciona
+    this.scene.add(this.createAmbientLight()); //sem essa iluminação, as faces que nao estao apontadas para o espectador (nós) ficam totalmente pretas. Com a iluminação ambiente elas ficam levemente sombreada. 
+    this.scene.add(this.createPointLight()); //iluminação pontual 
   }
 
   createLight(): void {
@@ -155,6 +158,48 @@ export class RenderComponent implements OnInit {
       return 0;
     }
     return window.innerWidth / window.innerHeight;
+  }
+
+  createWoodBoxMaterial = function() {
+    const loader = new THREE.TextureLoader();
+    //obs: sem efeito de iluminação,ou seja, a imagem está totalmente visivel em todas as faces, utilizar MeshBasicMaterial no lugar de MeshPhongMaterial
+
+    //Exemplo de mesma imagem para todas faces do cubo
+    /*const boxMaterial = new THREE.MeshPhongMaterial({ 
+      map: loader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg')
+    });*/
+
+    //exemplo com uma imagem diferente para cada face do cubo
+    const boxMaterial = [
+      new THREE.MeshPhongMaterial({map: loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-1.jpg')}),
+      new THREE.MeshPhongMaterial({map: loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-2.jpg')}),
+      new THREE.MeshPhongMaterial({map: loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-3.jpg')}),
+      new THREE.MeshPhongMaterial({map: loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-4.jpg')}),
+      new THREE.MeshPhongMaterial({map: loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-5.jpg')}),
+      new THREE.MeshPhongMaterial({map: loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-6.jpg')}),
+    ];
+
+    return boxMaterial;
+
+  };
+
+  createDirectionalLight = function() {
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    directionalLight.position.set(10,100,120);
+    directionalLight.name='directional';
+    return directionalLight
+  };
+
+  createAmbientLight = function() {
+    var ambientLight = new THREE.AmbientLight(0x111111);
+    ambientLight.name='ambient';
+    return ambientLight;
+  };
+
+  createPointLight = function(){
+    const light = new THREE.PointLight( 0xfffff, 1, 100 );
+    light.position.set( 50, 50, 50 );
+    return light
   }
 
 }
