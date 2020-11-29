@@ -58,7 +58,7 @@ export class RenderComponent implements OnInit {
 
     
     //var renderer = new THREE.WebGLRenderer();
-    this.renderer.setSize( window.innerWidth-100, window.innerHeight );
+    this.renderer.setSize( window.innerWidth-100, window.innerHeight-100 );
     document.body.appendChild( this.renderer.domElement );
     
 
@@ -77,6 +77,14 @@ export class RenderComponent implements OnInit {
 
     document.body.getElementsByTagName('canvas')[0].style.margin = "auto";
     document.body.getElementsByTagName('canvas')[0].style.padding = "0";
+
+
+    const size = 10;
+    const divisions = 10;
+    
+    const gridHelper = new THREE.GridHelper( size, divisions );
+    gridHelper.position.y = -1;
+    this.scene.add( gridHelper );
 
     this.render();
   }
