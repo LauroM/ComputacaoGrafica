@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as THREE from 'three';
 import { FileUploader } from 'ng2-file-upload/ng2-file-upload';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
 
 @Component({
   selector: 'app-render',
@@ -95,24 +96,18 @@ export class RenderComponent implements OnInit {
 
     // ../../assets/obj/christma_bell_glTF.glb'
     //file://home/oliveira/git/ComputacaoGrafica/cgApp/src/assets/obj/
-    const lod = new GLTFLoader().setPath( '../../src/assets/obj/' );
-    lod.load( 'monster.gltf', ( gltf )=> {
+    var path = 'https://github.com/LauroM/ComputacaoGrafica/blob/master/cgApp/src/assets/obj/';
 
-      gltf.scene.traverse( function ( child ) {
+    var objLoader = new OBJLoader();
 
-        // if ( child.isMesh ) {
 
-        //   // TOFIX RoughnessMipmapper seems to be broken with WebGL 2.0
-        //   // roughnessMipmapper.generateMipmaps( child.material );
 
-        // }
+    //var path = '../../src/assets/obj/';
 
-      } );
+    objLoader.load( `${path}cube.obj`, ( gltf )=> {
+
+      this.scene.add( gltf );
       this.renderer.render(this.scene,this.camera);
-      
-      // console.log(gltf)
-      // a.addLevel(gltf.scene,80);
-      this.scene.add( gltf.scene );
     
     }, undefined, function ( error ) {
     
@@ -120,7 +115,11 @@ export class RenderComponent implements OnInit {
     
     } );
 
-    //this.renderer.render(this.scene,this.camera);
+
+    // var object = a.parse( `${path}WAVEFRONT.obj` );
+
+    // this.scene.add( object );
+
   }
 
   
