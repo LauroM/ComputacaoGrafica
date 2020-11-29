@@ -3,6 +3,8 @@ import * as THREE from 'three';
 import { FileUploader } from 'ng2-file-upload/ng2-file-upload';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
 
 @Component({
   selector: 'app-render',
@@ -19,7 +21,13 @@ export class RenderComponent implements OnInit {
   value1: string = "off";
   myfile: any[] = [];
   public loader = new GLTFLoader();
+  cube:any=null;
   // public uploader: FileUploader = new FileUploader({url: URL, itemAlias: 'photo'});
+  controls:any = null;
+  mesh:any = null;
+  light:any = null;
+
+
 
 
   constructor() { 
@@ -27,16 +35,23 @@ export class RenderComponent implements OnInit {
       { label: "Dark", value: "off" },
       { label: "Light", value: "on" }
     ];
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+    this.controls = new OrbitControls(this.camera,this.renderer.domElement);   
   }
 
   ngOnInit(): void {
     this.createCanvas();
+    //this.configCamera()
   }
 
+  ngAfterViewInit(){
+    this.configControls();
+    //this.createMesh();
+    this.createLight();
+  }
 
   public createCanvas(){
 
-    this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
     
     //var renderer = new THREE.WebGLRenderer();
     this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -44,16 +59,16 @@ export class RenderComponent implements OnInit {
     
     var geometry = new THREE.BoxGeometry();
     var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    var cube = new THREE.Mesh( geometry, material );
-    this.scene.add( cube );
+    this.cube = new THREE.Mesh( geometry, material );
+    this.scene.add( this.cube );
 
     this.camera.position.z = 5;
     
     var animate = () =>{
         requestAnimationFrame( animate );
     
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
+        // cube.rotation.x += 0.01;
+        // cube.rotation.y += 0.01;
     
         this.renderer.render( this.scene, this.camera );
     };
@@ -84,25 +99,13 @@ export class RenderComponent implements OnInit {
 
   public myUploader() {
     
-    // objLoader.load('https://threejsfundamentals.org/threejs/resources/models/windmill/windmill.obj', (root) => {
-    //   scene.add(root);
-    // });
-    // var a = new THREE.LOD();
-    // var geometry = new THREE.BoxGeometry(1,1,1);
-    // var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
-    // var cube = new THREE.Mesh( geometry, material );
-    // a.addLevel(cube,100);
-    // this.scene.add(a);
+
 
     // ../../assets/obj/christma_bell_glTF.glb'
     //file://home/oliveira/git/ComputacaoGrafica/cgApp/src/assets/obj/
     var path = 'https://github.com/LauroM/ComputacaoGrafica/blob/master/cgApp/src/assets/obj/';
 
     var objLoader = new OBJLoader();
-
-
-
-    //var path = '../../src/assets/obj/';
 
     objLoader.load( `${path}cube.obj`, ( gltf )=> {
 
@@ -115,13 +118,43 @@ export class RenderComponent implements OnInit {
     
     } );
 
-
-    // var object = a.parse( `${path}WAVEFRONT.obj` );
-
-    // this.scene.add( object );
-
   }
 
+  configControls() {
+    //this.controls.autoRotate = true;
+    this.controls.enableZoom = false;
+    this.controls.enablePan  = false;
+    this.controls.update();
+  }
   
-  
+  // parametro
+  createMesh(): void {
+    const geometry = new THREE.BoxGeometry(1,1,1);
+    const material = new THREE.MeshLambertMaterial({ color: 0x000000 });
+    this.mesh = new THREE.Mesh(geometry, material);
+    this.scene.add(this.mesh);
+  }
+
+  createLight(): void {
+    this.light = new THREE.PointLight( 0xffffff );
+	  this.light.position.set( -10, 10, 10 );
+	  this.scene.add( this.light );
+  }
+
+  configCamera(): void {
+    this.camera.aspect = this.calculateAspectRatio();
+    this.camera.updateProjectionMatrix();
+	  this.camera.position.set( -15, 10, 15 );
+	  this.camera.lookAt( this.scene.position );
+  }
+
+  private calculateAspectRatio(): number {
+    
+    const height = window.innerHeight;
+    if (height === 0) {
+      return 0;
+    }
+    return window.innerWidth / window.innerHeight;
+  }
+
 }
