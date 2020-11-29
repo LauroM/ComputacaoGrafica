@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { RenderComponent } from './render/render.component';
 import {ButtonModule} from 'primeng/button';
 import {SelectButtonModule} from 'primeng/selectbutton';
+import { FormsModule }   from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import {SelectButtonModule} from 'primeng/selectbutton';
     BrowserModule,
     AppRoutingModule,
     ButtonModule,
-    SelectButtonModule
+    SelectButtonModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

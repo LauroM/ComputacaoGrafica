@@ -1,9 +1,12 @@
-<p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" (onChange)="toggleBackground()"></p-selectButton>
+
+<div>
+    <p-selectButton [options]="stateOptions" [(ngModel)]="value1" optionLabel="label" optionValue="value" (onChange)="toggleBackground()"></p-selectButton>
+
+    <!-- <p-button (click)="myUploader()" label="upload" ></p-button> -->
+</div>
 
 
-<p-button (click)="toggleBackground()" label="Click" ></p-button>
 
 <!-- <p-fileUpload name="myfile[]" customUpload="true" (uploadHandler)="myUploader($event)"></p-fileUpload> -->
 
 
-<p-button (click)="myUploader()" label="upload" ></p-button>

@@ -16,6 +16,7 @@ export class RenderComponent implements OnInit {
   toggled:boolean = false;
   scene = new THREE.Scene();
   stateOptions:any[];
+  
   renderer = new THREE.WebGLRenderer();
   camera:any;
   value1: string = "off";
@@ -34,6 +35,7 @@ export class RenderComponent implements OnInit {
       { label: "Dark", value: "off" },
       { label: "Light", value: "on" }
     ];
+    
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
     this.controls = new OrbitControls(this.camera,this.renderer.domElement);   
   }
@@ -56,7 +58,7 @@ export class RenderComponent implements OnInit {
 
     
     //var renderer = new THREE.WebGLRenderer();
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
+    this.renderer.setSize( window.innerWidth-100, window.innerHeight );
     document.body.appendChild( this.renderer.domElement );
     
 
@@ -71,33 +73,31 @@ export class RenderComponent implements OnInit {
         this.renderer.render( this.scene, this.camera );
     };
     animate();
+
+
+    document.body.getElementsByTagName('canvas')[0].style.margin = "auto";
+    document.body.getElementsByTagName('canvas')[0].style.padding = "0";
+
+    this.render();
   }
 
   animate(cube:any){
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
-    this.renderer.render( this.scene, this.camera );
+    this.render()
   }
 
   public toggleBackground(){
-
-  
     var color;
-    (this.toggled)? color = new THREE.Color(0x000000):
+    (this.value1==='off')? color = new THREE.Color(0x000000):
                         color = new THREE.Color(0xffffff);
-    this.toggled = !this.toggled;
-
     this.scene.background = color;
-    console.log(this.scene);
-
-    this.renderer.render(this.scene,this.camera);
-    
+    // this.renderer.render(this.scene,this.camera);
+    this.render();
   }
 
 
   public myUploader() {
-    
-
 
     // ../../assets/obj/christma_bell_glTF.glb'
     //file://home/oliveira/git/ComputacaoGrafica/cgApp/src/assets/obj/
@@ -200,6 +200,12 @@ export class RenderComponent implements OnInit {
     const light = new THREE.PointLight( 0xfffff, 1, 100 );
     light.position.set( 50, 50, 50 );
     return light
+  }
+
+
+
+  public render(){
+    this.renderer.render( this.scene, this.camera );
   }
 
 }
