@@ -79,14 +79,15 @@ export class RenderComponent implements OnInit {
     document.body.getElementsByTagName('canvas')[0].style.padding = "0";
 
 
-    const size = 10;
-    const divisions = 10;
-    
-    const gridHelper = new THREE.GridHelper( size, divisions );
+
+    this.createGrid();
+    this.render();
+  }
+
+  createGrid(){
+    const gridHelper = new THREE.GridHelper( 10, 10 );
     gridHelper.position.y = -1;
     this.scene.add( gridHelper );
-
-    this.render();
   }
 
   animate(cube:any){
@@ -105,27 +106,6 @@ export class RenderComponent implements OnInit {
   }
 
 
-  public myUploader() {
-
-    // ../../assets/obj/christma_bell_glTF.glb'
-    //file://home/oliveira/git/ComputacaoGrafica/cgApp/src/assets/obj/
-    var path = 'https://github.com/LauroM/ComputacaoGrafica/blob/master/cgApp/src/assets/obj/';
-
-    var objLoader = new OBJLoader();
-
-    objLoader.load( `${path}cube.obj`, ( gltf )=> {
-
-      this.scene.add( gltf );
-      this.renderer.render(this.scene,this.camera);
-    
-    }, undefined, function ( error ) {
-    
-      console.error( error );
-    
-    } );
-
-  }
-
   configControls() {
     //this.controls.autoRotate = true;
     this.controls.enableZoom = false;
@@ -133,7 +113,6 @@ export class RenderComponent implements OnInit {
     this.controls.update();
   }
   
-
   createMesh(): void {
     var geometry = new THREE.BoxGeometry();
     var material = this.createWoodBoxMaterial() // metodo que carrega a textura e retorna para ser adicionada
