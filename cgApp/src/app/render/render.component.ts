@@ -82,9 +82,36 @@ export class RenderComponent implements OnInit {
 
 
   public myUploader() {
-        
-    this.loader.load( 'src/assets/obj/WAVEFRONT.obj', ( gltf )=> {
+    
+    // objLoader.load('https://threejsfundamentals.org/threejs/resources/models/windmill/windmill.obj', (root) => {
+    //   scene.add(root);
+    // });
+    // var a = new THREE.LOD();
+    // var geometry = new THREE.BoxGeometry(1,1,1);
+    // var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+    // var cube = new THREE.Mesh( geometry, material );
+    // a.addLevel(cube,100);
+    // this.scene.add(a);
 
+    // ../../assets/obj/christma_bell_glTF.glb'
+    //file://home/oliveira/git/ComputacaoGrafica/cgApp/src/assets/obj/
+    const lod = new GLTFLoader().setPath( '../../src/assets/obj/' );
+    lod.load( 'monster.gltf', ( gltf )=> {
+
+      gltf.scene.traverse( function ( child ) {
+
+        // if ( child.isMesh ) {
+
+        //   // TOFIX RoughnessMipmapper seems to be broken with WebGL 2.0
+        //   // roughnessMipmapper.generateMipmaps( child.material );
+
+        // }
+
+      } );
+      this.renderer.render(this.scene,this.camera);
+      
+      // console.log(gltf)
+      // a.addLevel(gltf.scene,80);
       this.scene.add( gltf.scene );
     
     }, undefined, function ( error ) {
@@ -92,6 +119,8 @@ export class RenderComponent implements OnInit {
       console.error( error );
     
     } );
+
+    //this.renderer.render(this.scene,this.camera);
   }
 
   
